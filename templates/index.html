@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI Sales Lead Qualification</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            font-family: Arial, sans-serif;
+
+            max-width: 1100px;
+
+            margin: 30px auto;
+
+            padding: 20px;
+
+            background: #f4f6f8;
+
+            color: #222;
+        }
+
+
+        .container {
+
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 10px;
+        }
+
+
+        h1 {
+
+            margin-bottom: 5px;
+        }
+
+
+        h2 {
+
+            border-bottom: 1px solid #ddd;
+
+            padding-bottom: 8px;
+        }
+
+
+        h3 {
+
+            margin-top: 25px;
+        }
+
+
+        .subtitle {
+
+            color: #666;
+
+            margin-bottom: 30px;
+        }
+
+
+        /* ================================================= */
+        /* USER BAR */
+        /* ================================================= */
+
+
+        .user-bar {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 25px;
+
+            padding-bottom: 15px;
+
+            border-bottom: 1px solid #eee;
+        }
+
+
+        .user-info {
+
+            line-height: 1.5;
+        }
+
+
+        .username {
+
+            font-weight: bold;
+        }
+
+
+        .reports {
+
+            color: #666;
+
+            font-size: 14px;
+        }
+
+
+        .logout {
+
+            text-decoration: none;
+
+            color: #666;
+
+            font-size: 14px;
+        }
+
+
+        .logout:hover {
+
+            color: #222;
+        }
+
+
+        /* ================================================= */
+        /* FORM */
+        /* ================================================= */
+
+
+        label {
+
+            display: block;
+
+            font-weight: bold;
+
+            margin-top: 15px;
+        }
+
+
+        input,
+        textarea {
+
+            width: 100%;
+
+            padding: 10px;
+
+            margin-top: 5px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 5px;
+
+            font-size: 16px;
+        }
+
+
+        textarea {
+
+            height: 100px;
+
+            resize: vertical;
+        }
+
+
+        button {
+
+            margin-top: 20px;
+
+            padding: 12px 25px;
+
+            background: #222;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            font-size: 16px;
+        }
+
+
+        button:hover {
+
+            background: #444;
+        }
+
+
+        /* ================================================= */
+        /* RESULTS */
+        /* ================================================= */
+
+
+        .result {
+
+            margin-top: 45px;
+        }
+
+
+        .card {
+
+            margin-top: 25px;
+
+            padding: 22px;
+
+            border: 1px solid #ddd;
+
+            border-radius: 8px;
+
+            background: white;
+        }
+
+
+        /* ================================================= */
+        /* SCORE */
+        /* ================================================= */
+
+
+        .score-card {
+
+            text-align: center;
+
+            padding: 30px;
+
+            background: #f0f3f6;
+        }
+
+
+        .score {
+
+            font-size: 55px;
+
+            font-weight: bold;
+
+            margin: 10px 0;
+        }
+
+
+        .qualified {
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+            color: #16803c;
+        }
+
+
+        .unqualified {
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+            color: #b42318;
+        }
+
+
+        /* ================================================= */
+        /* INFORMATION */
+        /* ================================================= */
+
+
+        .info-row {
+
+            margin: 10px 0;
+
+            line-height: 1.5;
+        }
+
+
+        /* ================================================= */
+        /* SCORING LOGIC */
+        /* ================================================= */
+
+
+        .criteria {
+
+            padding-left: 25px;
+        }
+
+
+        .criteria li {
+
+            margin-bottom: 10px;
+
+            line-height: 1.5;
+        }
+
+
+        /* ================================================= */
+        /* VALIDATION */
+        /* ================================================= */
+
+
+        .validation {
+
+            background: #fff8dc;
+
+            padding: 18px;
+
+            border-radius: 6px;
+
+            line-height: 1.6;
+        }
+
+
+        /* ================================================= */
+        /* EMAIL */
+        /* ================================================= */
+
+
+        .email {
+
+            background: #f5f5f5;
+
+            padding: 20px;
+
+            border-radius: 6px;
+
+            white-space: pre-wrap;
+
+            line-height: 1.6;
+        }
+
+
+        .no-email {
+
+            background: #f8eeee;
+
+            padding: 20px;
+
+            border-radius: 6px;
+
+            font-weight: bold;
+
+            line-height: 1.5;
+        }
+
+
+        /* ================================================= */
+        /* QUOTA ERROR */
+        /* ================================================= */
+
+
+        .quota-error {
+
+            background: #f8eeee;
+
+            border: 1px solid #e0b4b4;
+
+            color: #8a1c1c;
+
+            padding: 18px;
+
+            border-radius: 6px;
+
+            margin-top: 25px;
+
+            line-height: 1.5;
+
+            font-weight: bold;
+        }
+
+
+        /* ================================================= */
+        /* MOBILE */
+        /* ================================================= */
+
+
+        @media (max-width: 600px) {
+
+            body {
+
+                margin: 10px auto;
+
+                padding: 10px;
+            }
+
+
+            .container {
+
+                padding: 18px;
+            }
+
+
+            h1 {
+
+                font-size: 25px;
+            }
+
+
+            h2 {
+
+                font-size: 21px;
+            }
+
+
+            h3 {
+
+                font-size: 18px;
+            }
+
+
+            .score {
+
+                font-size: 42px;
+            }
+
+
+            input,
+            textarea {
+
+                font-size: 16px;
+            }
+
+
+            button {
+
+                width: 100%;
+
+                padding: 14px;
+            }
+
+
+            .card {
+
+                padding: 17px;
+            }
+
+
+            .user-bar {
+
+                align-items: flex-start;
+
+                gap: 15px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- ================================================= -->
+    <!-- USER INFORMATION / LOGOUT -->
+    <!-- ================================================= -->
+
+
+    <div class="user-bar">
+
+
+        <div class="user-info">
+
+            <div class="username">
+
+                User: {{ username }}
+
+            </div>
+
+
+            <div class="reports">
+
+                Reports Remaining:
+
+                <strong>
+                    {{ reports_remaining }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <a
+            href="/logout"
+            class="logout"
+        >
+
+            Logout
+
+        </a>
+
+
+    </div>
+
+
+
+    <!-- ================================================= -->
+    <!-- HEADER -->
+    <!-- ================================================= -->
+
+
+    <h1>
+        AI Sales Lead Qualification
+    </h1>
+
+
+    <p class="subtitle">
+        Multi-Agent CrewAI Lead Scoring & Outreach System
+    </p>
+
+    <p class="subtitle">
+        Backstory: You are a Services Firm which specializes in Advanced Analytics, Deploying ML Models and Agentic AI Automation.
+        (For changing the backstory contact admin)
+    </p>
+
+    <p class="subtitle">
+        Enter the Lead Information you have below. Avoid using Dummy/Outdated Values as it will lower the Lead Score if the engine detects so.
+    </p>
+
+
+    <!-- ================================================= -->
+    <!-- QUOTA ERROR -->
+    <!-- ================================================= -->
+
+
+    {% if quota_error %}
+
+
+        <div class="quota-error">
+
+            {{ quota_error }}
+
+        </div>
+
+
+    {% endif %}
+
+
+
+    <!-- ================================================= -->
+    <!-- INPUT FORM -->
+    <!-- ================================================= -->
+
+
+    {% if not quota_error %}
+
+
+    <form method="post" action="/run">
+
+
+        <label>
+            Name
+        </label>
+
+        <input
+            type="text"
+            name="name"
+            required
+        >
+
+
+        <label>
+            Job Title
+        </label>
+
+        <input
+            type="text"
+            name="job_title"
+            required
+        >
+
+
+        <label>
+            Company
+        </label>
+
+        <input
+            type="text"
+            name="company"
+            required
+        >
+
+
+        <label>
+            Email
+        </label>
+
+        <input
+            type="email"
+            name="email"
+            required
+        >
+
+
+        <label>
+            Use Case
+        </label>
+
+        <textarea
+            name="use_case"
+            required
+        ></textarea>
+
+
+        <button type="submit">
+
+            Qualify Lead
+
+        </button>
+
+
+    </form>
+
+
+    {% endif %}
+
+
+
+    <!-- ================================================= -->
+    <!-- RESULTS -->
+    <!-- ================================================= -->
+
+
+    {% if result %}
+
+
+    <div class="result">
+
+
+        <h1>
+            Lead Qualification Report
+        </h1>
+
+
+
+        <!-- ================================================= -->
+        <!-- FINAL SCORE -->
+        <!-- ================================================= -->
+
+
+        <div class="card score-card">
+
+
+            <h2>
+                Final Lead Score
+            </h2>
+
+
+            <div class="score">
+
+                {{ result.scoring.lead_score.score }}
+
+                / 100
+
+            </div>
+
+
+            {% if result.scoring.lead_score.score > 70 %}
+
+
+                <div class="qualified">
+
+                    ✓ QUALIFIED LEAD
+
+                </div>
+
+
+            {% else %}
+
+
+                <div class="unqualified">
+
+                    ✗ UNQUALIFIED LEAD
+
+                </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- PERSONAL INFORMATION -->
+        <!-- ================================================= -->
+
+
+        <div class="card">
+
+
+            <h2>
+                Personal Information
+            </h2>
+
+
+            <div class="info-row">
+
+                <strong>Name:</strong>
+
+                {{ result.scoring.personal_info.name }}
+
+            </div>
+
+
+            <div class="info-row">
+
+                <strong>Job Title:</strong>
+
+                {{ result.scoring.personal_info.job_title }}
+
+            </div>
+
+
+            <div class="info-row">
+
+                <strong>Role Relevance:</strong>
+
+                {{ result.scoring.personal_info.role_relevance }}
+
+                / 10
+
+            </div>
+
+
+            <div class="info-row">
+
+                <strong>Professional Background:</strong>
+
+                {{ result.scoring.personal_info.professional_background }}
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- COMPANY INFORMATION -->
+        <!-- ================================================= -->
+
+
+        <div class="card">
+
+
+            <h2>
+                Company Information
+            </h2>
+
+
+            <div class="info-row">
+
+                <strong>Company:</strong>
+
+                {{ result.scoring.company_info.company_name }}
+
+            </div>
+
+
+            <div class="info-row">
+
+                <strong>Industry:</strong>
+
+                {{ result.scoring.company_info.industry }}
+
+            </div>
+
+
+            <div class="info-row">
+
+                <strong>Company Size:</strong>
+
+                {{ result.scoring.company_info.company_size }}
+
+                employees
+
+            </div>
+
+
+            {% if result.scoring.company_info.revenue %}
+
+            <div class="info-row">
+
+                <strong>Revenue:</strong>
+
+                {{ result.scoring.company_info.revenue }}
+
+            </div>
+
+            {% endif %}
+
+
+            <div class="info-row">
+
+                <strong>Market Presence:</strong>
+
+                {{ result.scoring.company_info.market_presence }}
+
+                / 10
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- LEAD SCORING LOGIC -->
+        <!-- ================================================= -->
+
+
+        <div class="card">
+
+
+            <h2>
+                Lead Scoring Logic
+            </h2>
+
+
+            <h3>
+                Role Relevance
+            </h3>
+
+
+            <p>
+
+                {{ result.scoring.personal_info.role_relevance }}
+
+                / 10
+
+            </p>
+
+
+            <h3>
+                Market Presence
+            </h3>
+
+
+            <p>
+
+                {{ result.scoring.company_info.market_presence }}
+
+                / 10
+
+            </p>
+
+
+            <h3>
+                Scoring Criteria
+            </h3>
+
+
+            <ul class="criteria">
+
+
+                {% for criterion in result.scoring.lead_score.scoring_criteria %}
+
+
+                <li>
+
+                    {{ criterion }}
+
+                </li>
+
+
+                {% endfor %}
+
+
+            </ul>
+
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- VALIDATION REPORT -->
+        <!-- ================================================= -->
+
+
+        <div class="card">
+
+
+            <h2>
+                Validation Report
+            </h2>
+
+
+            {% if result.scoring.lead_score.validation_notes %}
+
+
+                <div class="validation">
+
+                    {{ result.scoring.lead_score.validation_notes }}
+
+                </div>
+
+
+            {% else %}
+
+
+                <p>
+
+                    No additional validation notes were provided.
+
+                </p>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- OUTREACH EMAIL -->
+        <!-- ================================================= -->
+
+
+        <div class="card">
+
+
+            <h2>
+                Outreach Email
+            </h2>
+
+
+            {% if result.scoring.lead_score.score > 70 %}
+
+
+                <div class="email">
+
+                    {{ result.email }}
+
+                </div>
+
+
+            {% else %}
+
+
+                <div class="no-email">
+
+                    No Email because lead score is
+
+                    {{ result.scoring.lead_score.score }}
+
+                    which is below the qualification
+                    threshold of 70.
+
+                </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+    </div>
+
+
+    {% endif %}
+
+
+</div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,20 @@
+{
+    "admin": {
+        "password_env": "ADMIN_PASSWORD",
+        "role": "admin",
+        "max_reports": null,
+        "reports_used": 0
+    },
+    "parijat": {
+        "password_env": "CLIENT1_PASSWORD",
+        "role": "client",
+        "max_reports": 5,
+        "reports_used": 0
+    },
+    "tom": {
+        "password_env": "CLIENT2_PASSWORD",
+        "role": "client",
+        "max_reports": 5,
+        "reports_used": 0
+    }
+}

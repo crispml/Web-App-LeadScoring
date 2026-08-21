@@ -9,3 +9,4 @@ itsdangerous
 pyyaml
 pandas
 pydantic
+tavily-python

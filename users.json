@@ -16,5 +16,11 @@
         "role": "client",
         "max_reports": 5,
         "reports_used": 0
+    },
+    "demo": {
+        "password_env": "CLIENT3_PASSWORD",
+        "role": "client",
+        "max_reports": 10,
+        "reports_used": 0
     }
 }

@@ -8,7 +8,7 @@
     "parijat": {
         "password_env": "CLIENT1_PASSWORD",
         "role": "client",
-        "max_reports": 5,
+        "max_reports": 15,
         "reports_used": 0
     },
     "tom": {
